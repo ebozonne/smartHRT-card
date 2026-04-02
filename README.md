@@ -55,24 +55,22 @@ Cette carte est conçue pour être installée facilement via [![hacs_badge](http
 ## ⚙️ Configuration (YAML)
 
 
-
 Une fois installée, vous pouvez ajouter la carte à votre tableau de bord en utilisant l'éditeur manuel (YAML). 
 
-
-
-Voici les paramètres disponibles :
-
-
-
-```yaml
-
+Exemple
+```
+grid_options:
+  columns: 6
 type: custom:smarthrt-card
+prefix: sdb
+name: 🛁 sdb
+```
 
-prefix: salon      # REQUIS : le nom de l'instance SmartHRT (ex: salon, chambre)
+Voici les paramètres yaml disponibles (type: custom:smarthrt-card ) :
 
-name: Mon Salon    # OPTIONNEL : le titre affiché sur la carte (par défaut : le prefix avec une majuscule)
-
-min_temp: 13       # OPTIONNEL : température minimale sur l'arc (défaut : 13)
-
-max_temp: 26       # OPTIONNEL : température maximale sur l'arc (défaut : 26)
-
+| param | ex | -- |
+| -------- | -------- | -------- |
+| prefix: | salon | # REQUIS : le nom de l'instance SmartHRT (ex: salon, chambre) |
+| name: | Mon Salon | # OPTIONNEL : le titre affiché sur la carte |
+| min_temp: | 13 | # OPTIONNEL : température minimale sur l'arc (défaut : 13) |
+| max_temp: | 26 | # OPTIONNEL : température maximale sur l'arc (défaut : 26) |
