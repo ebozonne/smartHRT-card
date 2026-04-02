@@ -34,7 +34,7 @@ Une carte Lovelace personnalisée (Custom Card) pour Home Assistant, conçue sp�
 
 
 
-Cette carte est conçue pour être installée facilement via \[HACS](https://hacs.xyz/).
+Cette carte est conçue pour être installée facilement via [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration).
 
 
 
@@ -42,7 +42,7 @@ Cette carte est conçue pour être installée facilement via \[HACS](https://hac
 
 2\. Allez dans le menu en haut à droite (les trois petits points) et sélectionnez **Dépôts personnalisés** (*Custom repositories*).
 
-3\. Ajoutez l'URL de ce dépôt : `https://github.com/ebozonne/NOM\_DU\_DEPOT`
+3\. Ajoutez l'URL de ce dépôt : [https://github.com/ebozonne/smartHRT-card](https://github.com/ebozonne/smartHRT-card)
 
 4\. Choisissez la catégorie **Lovelace** (ou Tableau de bord) et cliquez sur **Ajouter**.
 
