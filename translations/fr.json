@@ -1,0 +1,29 @@
+{
+  "language": "fr",
+  "smarthrt_keys": {
+    "sensor_state": "etat_machine",
+    "sensor_temp_int": "temperature_interieure",
+    "sensor_relay": "heure_de_relance",
+    "sensor_time_to": "temps_avant_relance",
+    "label_time_to": "Temps avant relance",
+    "number_setpoint": "consigne",
+    "time_stop": "heure_coupure_chauffage",
+    "time_target": "heure_cible",
+    "switch_enabled": "mode_chauffage_intelligent",
+    "sensor_rcth": "rcth",
+    "sensor_uwind": "vitesse_du_vent",
+    "number_rcth_lw": "rcth_vent_faible",
+    "number_rcth_hw": "rcth_vent_fort",
+    "number_relax": "facteur_de_relaxation",
+    "switch_adaptive": "mode_adaptatif"
+  },
+  "mode_values": {
+    "initializing": "Initialisation",
+    "heating_on": "Chauffage actif",
+    "detecting_lag": "Détection lag",
+    "monitoring": "Surveillance",
+    "recovery": "Relance",
+    "heating_process": "Montée en température",
+    "unknown": "Inconnu"
+  }
+}

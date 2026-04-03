@@ -50,7 +50,11 @@ Cette carte est conçue pour être installée facilement via [![hacs_badge](http
 
 6\. Acceptez de recharger votre navigateur quand HACS vous le demande.
 
+Si vous installez la carte **à la main** (copie dans `/config/www/`), placez aussi le dossier **`translations/`** à côté de `smarthrt-card.js` (même niveau que dans ce dépôt). Sans ce dossier, les clés d’entités par langue ne se chargeront pas.
 
+### Changelog
+
+**1.0.2** — Sélection automatique des suffixes d’entités selon la langue de l’interface Home Assistant (fichiers `translations/*.json`, fallback anglais). Les libellés d’état machine utilisent les traductions intégrées SmartHRT par langue.
 
 ## ⚙️ Configuration (YAML)
 

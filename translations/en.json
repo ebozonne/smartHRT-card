@@ -1,0 +1,29 @@
+{
+  "language": "en",
+  "smarthrt_keys": {
+    "sensor_state": "machine_state",
+    "sensor_temp_int": "interior_temperature",
+    "sensor_relay": "recovery_start_time",
+    "sensor_time_to": "time_to_recovery",
+    "label_time_to": "Time to Recovery",
+    "number_setpoint": "set_point",
+    "time_stop": "heating_stop_hour",
+    "time_target": "target_hour",
+    "switch_enabled": "smart_heating_mode",
+    "sensor_rcth": "rcth",
+    "sensor_uwind": "wind_speed",
+    "number_rcth_lw": "rcth_low_wind",
+    "number_rcth_hw": "rcth_high_wind",
+    "number_relax": "relaxation_factor",
+    "switch_adaptive": "adaptive_mode"
+  },
+  "mode_values": {
+    "initializing": "Initializing",
+    "heating_on": "Heating Active",
+    "detecting_lag": "Detecting Lag",
+    "monitoring": "Monitoring",
+    "recovery": "Recovery",
+    "heating_process": "Heating Up",
+    "unknown": "Unknown"
+  }
+}

@@ -7,43 +7,42 @@
  * max_temp: 26       # optional, default 26 (display range only)
  */
 
-// Entity suffix mapping — change values to match your HA language
-// Current language: French
-const SMARTHRT_KEYS = {
-  sensor_state:    'etat_machine',
-  sensor_temp_int: 'temperature_interieure',
-  sensor_relay:    'heure_de_relance',
-  sensor_time_to:  'temps_avant_relance',
-  label_time_to:   'Temps avant relance',
-  number_setpoint: 'consigne',
-  time_stop:       'heure_coupure_chauffage',
-  time_target:     'heure_cible',
-  switch_enabled:  'mode_chauffage_intelligent',
-  // Expert mode entities
-  sensor_rcth:     'rcth',
-  sensor_uwind:    'vitesse_du_vent',
-  number_rcth_lw:  'rcth_vent_faible',
-  number_rcth_hw:  'rcth_vent_fort',
-  number_relax:    'facteur_de_relaxation',
-  switch_adaptive:  'mode_adaptatif',
-  mode_values: {
-    // language-neutral keys
-    'initializing':          { label: 'INIT',       color: '#78909c', icon: '○' },
-    'heating_on':            { label: 'ON',         color: '#ef4444', icon: '●' },
-    'detecting_lag':         { label: 'LAG',        color: '#f59e0b', icon: '◐' },
-    'monitoring':            { label: 'MONITORING', color: '#3b82f6', icon: '◉' },
-    'recovery':              { label: 'BOOST',      color: '#ef4444', icon: '●' },
-    'heating_process':       { label: 'BOOST',      color: '#ef4444', icon: '●' },
-    'unknown':               { label: '?',          color: '#78909c', icon: '○' },
-    // French (strings.json)
-    'initialisation':        { label: 'INIT',       color: '#78909c', icon: '○' },
-    'chauffage actif':       { label: 'ON',         color: '#ef4444', icon: '●' },
-    'détection lag':         { label: 'LAG',        color: '#f59e0b', icon: '◐' },
-    'surveillance':          { label: 'MONITORING', color: '#3b82f6', icon: '◉' },
-    'relance':               { label: 'BOOST',      color: '#ef4444', icon: '●' },
-    'montée en température': { label: 'BOOST',      color: '#ef4444', icon: '●' },
-    'inconnu':               { label: '?',          color: '#78909c', icon: '○' },
-  },
+const SMARTHRT_REQUIRED_KEYS = [
+  'sensor_state', 'sensor_temp_int', 'sensor_relay', 'sensor_time_to',
+  'label_time_to', 'number_setpoint', 'time_stop', 'time_target',
+  'switch_enabled', 'sensor_rcth', 'sensor_uwind', 'number_rcth_lw',
+  'number_rcth_hw', 'number_relax', 'switch_adaptive',
+];
+
+// Runtime fallback if translation files are unavailable.
+const SMARTHRT_EN_FALLBACK = {
+  sensor_state: 'machine_state',
+  sensor_temp_int: 'interior_temperature',
+  sensor_relay: 'recovery_start_time',
+  sensor_time_to: 'time_to_recovery',
+  label_time_to: 'Time to Recovery',
+  number_setpoint: 'set_point',
+  time_stop: 'heating_stop_hour',
+  time_target: 'target_hour',
+  switch_enabled: 'smart_heating_mode',
+  sensor_rcth: 'rcth',
+  sensor_uwind: 'wind_speed',
+  number_rcth_lw: 'rcth_low_wind',
+  number_rcth_hw: 'rcth_high_wind',
+  number_relax: 'relaxation_factor',
+  switch_adaptive: 'adaptive_mode',
+};
+
+let SMARTHRT_KEYS = { ...SMARTHRT_EN_FALLBACK, mode_values: {} };
+const SMARTHRT_TRANSLATION_CACHE = {};
+const SMARTHRT_MODE_VALUES_BASE = {
+  'initializing':    { label: 'INIT',       color: '#78909c', icon: '○' },
+  'heating_on':      { label: 'ON',         color: '#ef4444', icon: '●' },
+  'detecting_lag':   { label: 'LAG',        color: '#f59e0b', icon: '◐' },
+  'monitoring':      { label: 'MONITORING', color: '#3b82f6', icon: '◉' },
+  'recovery':        { label: 'BOOST',      color: '#ef4444', icon: '●' },
+  'heating_process': { label: 'BOOST',      color: '#ef4444', icon: '●' },
+  'unknown':         { label: '?',          color: '#78909c', icon: '○' },
 };
 
 // Temperature color scale -10°C → 42°C
@@ -86,6 +85,8 @@ class SmartHRTCard extends HTMLElement {
     this._svgReady = false;
     this._el = null;
     this._expertMode = false;
+    this._activeLang = null;
+    this._langApplySeq = 0;
     this._expertData = null; // cached history data
     this._expertLoading = false;
     this._onMouseMove = (e) => this._onDrag(e);
@@ -113,6 +114,7 @@ class SmartHRTCard extends HTMLElement {
 
   set hass(hass) {
     this._hass = hass;
+    this._applyLanguageKeys();
     try {
       if (!this._rendered) { this._render(); this._rendered = true; }
       else this._update();
@@ -133,6 +135,64 @@ class SmartHRTCard extends HTMLElement {
   _estate(key) { return this._hass?.states[this._eid(key)]?.state ?? null; }
   _eattr(key, attr) { return this._hass?.states[this._eid(key)]?.attributes?.[attr] ?? null; }
 
+  _getHaLang() {
+    const raw = this._hass?.language
+      || this._hass?.locale?.language
+      || this._hass?.selectedLanguage
+      || 'en';
+    return String(raw).toLowerCase().split(/[_-]/)[0];
+  }
+
+  _buildModeValues(modeLabels) {
+    const values = { ...SMARTHRT_MODE_VALUES_BASE };
+    const labels = modeLabels || {};
+    Object.keys(SMARTHRT_MODE_VALUES_BASE).forEach((canonical) => {
+      const localized = labels[canonical];
+      if (typeof localized === 'string' && localized.trim()) {
+        values[localized.toLowerCase()] = SMARTHRT_MODE_VALUES_BASE[canonical];
+      }
+    });
+    return values;
+  }
+
+  _isValidTranslationPayload(payload) {
+    if (!payload || typeof payload !== 'object' || !payload.smarthrt_keys) return false;
+    return SMARTHRT_REQUIRED_KEYS.every((k) => typeof payload.smarthrt_keys[k] === 'string');
+  }
+
+  async _loadLangKeys(lang) {
+    if (SMARTHRT_TRANSLATION_CACHE[lang]) return SMARTHRT_TRANSLATION_CACHE[lang];
+    const url = new URL(`./translations/${lang}.json`, import.meta.url);
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`Cannot load ${url}`);
+    const payload = await resp.json();
+    if (!this._isValidTranslationPayload(payload)) {
+      throw new Error(`Invalid translation payload for ${lang}`);
+    }
+    const pack = {
+      ...payload.smarthrt_keys,
+      mode_values: this._buildModeValues(payload.mode_values),
+    };
+    SMARTHRT_TRANSLATION_CACHE[lang] = pack;
+    return pack;
+  }
+
+  _applyLanguageKeys() {
+    const lang = this._getHaLang();
+    if (this._activeLang === lang) return;
+    this._activeLang = lang;
+    const seq = ++this._langApplySeq;
+
+    this._loadLangKeys(lang)
+      .catch(() => this._loadLangKeys('en'))
+      .catch(() => ({ ...SMARTHRT_EN_FALLBACK, mode_values: this._buildModeValues({}) }))
+      .then((pack) => {
+        if (seq !== this._langApplySeq) return;
+        SMARTHRT_KEYS = pack;
+        if (this._rendered) this._update();
+      });
+  }
+
   _isDark() {
     const bg = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color').trim() || '#fff';
     const hex = bg.replace(/^#/, '');
@@ -151,7 +211,9 @@ class SmartHRTCard extends HTMLElement {
     } catch(e) { return raw; }
   }
   _modeInfo(mode) {
-    const info = SMARTHRT_KEYS.mode_values[(mode||'').toLowerCase()]
+    const key = (mode || '').toLowerCase();
+    const info = SMARTHRT_KEYS.mode_values[key]
+              || SMARTHRT_MODE_VALUES_BASE[key]
               || { label: mode||'—', color: '#78909c', icon: '○' };
     return { ...info, glow: this._hexToRgba(info.color, 0.3) };
   }
@@ -614,9 +676,9 @@ class SmartHRTCard extends HTMLElement {
     r.getElementById('btn-plus').addEventListener('click',  () => this._adjustTemp( 0.5));
     r.getElementById('btn-minus').addEventListener('click', () => this._adjustTemp(-0.5));
     r.getElementById('block-stop').addEventListener('click', () =>
-      this._openDialog("Heure d'arrêt", SMARTHRT_KEYS.time_stop, this._el.valStop.textContent));
+      this._openDialog("Heure d'arrêt", 'time_stop', this._el.valStop.textContent));
     r.getElementById('block-target').addEventListener('click', () =>
-      this._openDialog('Heure cible', SMARTHRT_KEYS.time_target, this._el.valTarget.textContent));
+      this._openDialog('Heure cible', 'time_target', this._el.valTarget.textContent));
     r.getElementById('dialog-cancel').addEventListener('click', () => this._closeDialog());
     r.getElementById('dialog-ok').addEventListener('click',     () => this._confirmDialog());
     r.getElementById('btn-expert').addEventListener('click',    () => this._toggleExpert());
@@ -654,8 +716,8 @@ class SmartHRTCard extends HTMLElement {
     this._update();
   }
 
-  _openDialog(title, suffix, currentVal) {
-    this._dialogSuffix = suffix;
+  _openDialog(title, key, currentVal) {
+    this._dialogSuffix = key;
     this.shadowRoot.getElementById('dialog-title').textContent = title;
     this._el.dialogInput.value = (currentVal && currentVal !== '—') ? currentVal.trim() : '';
     this._el.dialogOverlay.classList.add('open');
@@ -665,7 +727,7 @@ class SmartHRTCard extends HTMLElement {
     const val = this._el.dialogInput.value;
     if (val && this._dialogSuffix) {
       this._hass.callService('time', 'set_value', {
-        entity_id: `time.${this._config.prefix}_${this._dialogSuffix}`, time: val,
+        entity_id: this._eid(this._dialogSuffix), time: val,
       });
     }
     this._closeDialog();

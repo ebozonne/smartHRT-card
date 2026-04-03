@@ -1,0 +1,29 @@
+{
+  "language": "es",
+  "smarthrt_keys": {
+    "sensor_state": "estado_de_la_maquina",
+    "sensor_temp_int": "temperatura_interior",
+    "sensor_relay": "hora_de_inicio_de_reinicio",
+    "sensor_time_to": "tiempo_hasta_reinicio",
+    "label_time_to": "Tiempo hasta reinicio",
+    "number_setpoint": "temperatura_objetivo",
+    "time_stop": "hora_de_apagado_de_calefaccion",
+    "time_target": "hora_objetivo",
+    "switch_enabled": "modo_calefaccion_inteligente",
+    "sensor_rcth": "rcth",
+    "sensor_uwind": "velocidad_del_viento",
+    "number_rcth_lw": "rcth_viento_bajo",
+    "number_rcth_hw": "rcth_viento_alto",
+    "number_relax": "factor_de_relajacion",
+    "switch_adaptive": "modo_adaptativo"
+  },
+  "mode_values": {
+    "initializing": "Inicializando",
+    "heating_on": "Calefacción activa",
+    "detecting_lag": "Detectando retraso",
+    "monitoring": "Monitoreando",
+    "recovery": "Reinicio",
+    "heating_process": "Calentando",
+    "unknown": "Desconocido"
+  }
+}

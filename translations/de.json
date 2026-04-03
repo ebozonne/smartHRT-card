@@ -1,0 +1,29 @@
+{
+  "language": "de",
+  "smarthrt_keys": {
+    "sensor_state": "maschinenzustand",
+    "sensor_temp_int": "innentemperatur",
+    "sensor_relay": "aufheiz_startzeit",
+    "sensor_time_to": "zeit_bis_aufheizen",
+    "label_time_to": "Zeit bis Aufheizen",
+    "number_setpoint": "solltemperatur",
+    "time_stop": "heizung_abschaltzeit",
+    "time_target": "zielzeit",
+    "switch_enabled": "intelligenter_heizmodus",
+    "sensor_rcth": "rcth",
+    "sensor_uwind": "windgeschwindigkeit",
+    "number_rcth_lw": "rcth_schwacher_wind",
+    "number_rcth_hw": "rcth_starker_wind",
+    "number_relax": "relaxationsfaktor",
+    "switch_adaptive": "adaptiver_modus"
+  },
+  "mode_values": {
+    "initializing": "Initialisierung",
+    "heating_on": "Heizung aktiv",
+    "detecting_lag": "Lag-Erkennung",
+    "monitoring": "Überwachung",
+    "recovery": "Aufheizen",
+    "heating_process": "Temperaturanstieg",
+    "unknown": "Unbekannt"
+  }
+}

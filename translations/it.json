@@ -1,0 +1,29 @@
+{
+  "language": "it",
+  "smarthrt_keys": {
+    "sensor_state": "stato_macchina",
+    "sensor_temp_int": "temperatura_interna",
+    "sensor_relay": "ora_inizio_riavvio",
+    "sensor_time_to": "tempo_al_riavvio",
+    "label_time_to": "Tempo al riavvio",
+    "number_setpoint": "temperatura_impostata",
+    "time_stop": "ora_spegnimento_riscaldamento",
+    "time_target": "ora_obiettivo",
+    "switch_enabled": "modalita_riscaldamento_intelligente",
+    "sensor_rcth": "rcth",
+    "sensor_uwind": "velocita_del_vento",
+    "number_rcth_lw": "rcth_vento_debole",
+    "number_rcth_hw": "rcth_vento_forte",
+    "number_relax": "fattore_di_rilassamento",
+    "switch_adaptive": "modalita_adattiva"
+  },
+  "mode_values": {
+    "initializing": "Inizializzazione",
+    "heating_on": "Riscaldamento attivo",
+    "detecting_lag": "Rilevamento ritardo",
+    "monitoring": "Monitoraggio",
+    "recovery": "Riavvio",
+    "heating_process": "Riscaldamento",
+    "unknown": "Sconosciuto"
+  }
+}
