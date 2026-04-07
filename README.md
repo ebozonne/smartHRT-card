@@ -25,6 +25,8 @@ A custom Lovelace card for Home Assistant, specifically designed to control and 
 * **Integrated Expert Mode**: Native generation of a scatter plot to analyze RCth history vs. wind speed, directly on the card.
 * **Dark/Light Mode**: Automatically adapts to your Home Assistant dashboard theme.
 
+![Features](images/explanations.png)
+
 ## 📥 Installation via HACS
 
 This card is designed to be easily installed via [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration).
