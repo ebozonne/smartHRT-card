@@ -5,7 +5,7 @@
 
 ---
 
-🙏 **Acknowledgments to @CorentinBarban**: author of the [SmartHRT fork](https://github.com/CorentinBarban/SmartHRT) for which this card is designed.
+🙏 **Acknowledgments to [@CorentinBarban](https://github.com/CorentinBarban)**: author of the [SmartHRT fork](https://github.com/CorentinBarban/SmartHRT) for which this card is designed.
 
 A custom Lovelace card for Home Assistant, specifically designed to control and monitor heating recovery (boost) cycles.
 
