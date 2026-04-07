@@ -1,10 +1,10 @@
 # SmartHRT Card
 
+🙏 Remerciements @CorentinBarban: auteur du [fork de SmartHRT](https://github.com/CorentinBarban/SmartHRT) pour lequel cette carte est conçue
 
+Une carte Lovelace personnalisée (Custom Card) pour Home Assistant, conçue spécifiquement pour piloter et monitorer la relance du chauffage
 
-Une carte Lovelace personnalisée (Custom Card) pour Home Assistant, conçue spécifiquement pour piloter et monitorer l'intégration [SmartHRT](https://github.com/CorentinBarban/SmartHRT) (fork amélioré de mon script initial [SmartHRT](https://github.com/ebozonne/SmartHRT)).
-
-
+🛠️ Prérequis: installer [SmartHRT](https://github.com/CorentinBarban/SmartHRT)
 
 ## 📸 Captures d'écran
 
