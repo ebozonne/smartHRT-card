@@ -1,0 +1,257 @@
+{
+  "title": "SmartHRT",
+  "config": {
+    "flow_title": "SmartHRT Konfiguration",
+    "step": {
+      "user": {
+        "title": "Identifikation",
+        "description": "Konfigurieren Sie Ihre SmartHRT-Integration",
+        "data": {
+          "name": "Name"
+        },
+        "data_description": {
+          "name": "Name der Integration"
+        }
+      },
+      "sensors": {
+        "title": "Sensorkonfiguration",
+        "description": "Konfigurieren Sie die Sensoren und Heizungsparameter",
+        "data": {
+          "target_hour": "Zielzeit",
+          "recoverycalc_hour": "Heizung Abschaltzeit",
+          "sensor_interior_temperature": "Innentemperatursensor",
+          "tsp": "Solltemperatur (Set Point)"
+        },
+        "data_description": {
+          "target_hour": "Gewünschte Aufwachzeit (z.B.: 6:00)",
+          "recoverycalc_hour": "Abschaltzeit der Heizung am Abend (z.B.: 23:00)",
+          "sensor_interior_temperature": "Raumtemperatursensor (z.B.: sensor.room_temperature)",
+          "tsp": "Gewünschte Temperatur (13-26°C)"
+        }
+      }
+    }
+  },
+  "options": {
+    "flow_title": "SmartHRT Optionen",
+    "step": {
+      "init": {
+        "title": "SmartHRT Konfiguration",
+        "description": "Ändern Sie die Konfiguration Ihrer intelligenten Heizung",
+        "data": {
+          "name": "Name",
+          "target_hour": "Zielzeit",
+          "recoverycalc_hour": "Heizung Abschaltzeit",
+          "sensor_interior_temperature": "Innentemperatursensor",
+          "tsp": "Solltemperatur (Set Point)"
+        },
+        "data_description": {
+          "name": "Name der Integration",
+          "target_hour": "Gewünschte Aufwachzeit (z.B.: 6:00)",
+          "recoverycalc_hour": "Abschaltzeit der Heizung am Abend (z.B.: 23:00)",
+          "sensor_interior_temperature": "Raumtemperatursensor (z.B.: sensor.room_temperature)",
+          "tsp": "Gewünschte Temperatur (13-26°C)"
+        }
+      }
+    }
+  },
+  "services": {
+    "start_heating_cycle": {
+      "name": "Heizzyklus starten",
+      "description": "Startet einen neuen täglichen Heizzyklus. Setzt den Zustandsautomaten auf HEATING_ON (aktives Heizen).",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional, verwendet den ersten verfügbaren wenn nicht angegeben)."
+        }
+      }
+    },
+    "stop_heating": {
+      "name": "Heizung stoppen",
+      "description": "Stoppt die Heizung und startet die Nachtüberwachungsphase.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    },
+    "start_recovery": {
+      "name": "Aufheizung starten",
+      "description": "Startet die Aufheizphase um die Zieltemperatur zur Weckzeit zu erreichen.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    },
+    "end_recovery": {
+      "name": "Aufheizung beenden",
+      "description": "Beendet die Aufheizphase. Berechnet RPth und kehrt zum normalen Heizmodus zurück.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    },
+    "get_state": {
+      "name": "Status abrufen",
+      "description": "Gibt den aktuellen Zustand des Zustandsautomaten mit allen Details zurück.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    },
+    "force_monitoring": {
+      "name": "DETECTING_LAG verlassen erzwingen",
+      "description": "Erzwingt den Austritt aus dem DETECTING_LAG-Zustand zu MONITORING. RCth-Lernen wird für diesen Zyklus deaktiviert.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    },
+    "reset_learning": {
+      "name": "Lernen zurücksetzen",
+      "description": "Setzt alle gelernten thermischen Koeffizienten auf ihre Standardwerte zurück.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    },
+    "trigger_calculation": {
+      "name": "Berechnung auslösen",
+      "description": "Löst manuell eine sofortige Neuberechnung der Aufheizzeit aus.",
+      "fields": {
+        "entry_id": {
+          "name": "Eintrag-ID",
+          "description": "Die Konfigurations-Eintrag-ID (optional)."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "interior_temp": {
+        "name": "Innentemperatur"
+      },
+      "exterior_temp": {
+        "name": "Außentemperatur"
+      },
+      "windchill": {
+        "name": "Gefühlte Temperatur"
+      },
+      "temp_forecast": {
+        "name": "Temperaturvorhersage"
+      },
+      "wind_speed": {
+        "name": "Windgeschwindigkeit"
+      },
+      "wind_forecast": {
+        "name": "Windvorhersage"
+      },
+      "wind_avg": {
+        "name": "Durchschnittswind (4h)"
+      },
+      "rcth_sensor": {
+        "name": "RCth"
+      },
+      "rpth_sensor": {
+        "name": "RPth"
+      },
+      "rcth_fast": {
+        "name": "Dynamisches RCth"
+      },
+      "recovery_calc_mode": {
+        "name": "Aufheiz-Berechnungsmodus"
+      },
+      "rp_calc_mode": {
+        "name": "RP-Berechnungsmodus"
+      },
+      "stop_lag_duration": {
+        "name": "Stop-Verzögerungsdauer"
+      },
+      "night_state": {
+        "name": "Nachtzustand"
+      },
+      "state": {
+        "name": "Maschinenzustand",
+        "state": {
+          "initializing": "Initialisierung",
+          "heating_on": "Heizung aktiv",
+          "detecting_lag": "Lag-Erkennung",
+          "monitoring": "Überwachung",
+          "recovery": "Aufheizen",
+          "heating_process": "Temperaturanstieg",
+          "unknown": "Unbekannt"
+        }
+      },
+      "time_to_recovery": {
+        "name": "Zeit bis Aufheizen"
+      },
+      "instance_info": {
+        "name": "Instanz-ID"
+      },
+      "recovery_start_timestamp": {
+        "name": "Aufheiz-Startzeit"
+      },
+      "target_hour_timestamp": {
+        "name": "Zielzeit"
+      },
+      "recoverycalc_hour_timestamp": {
+        "name": "Heizung Abschaltzeit"
+      }
+    },
+    "number": {
+      "setpoint": {
+        "name": "Solltemperatur"
+      },
+      "rcth": {
+        "name": "RCth"
+      },
+      "rpth": {
+        "name": "RPth"
+      },
+      "rcth_lw": {
+        "name": "RCth (Schwacher Wind)"
+      },
+      "rcth_hw": {
+        "name": "RCth (Starker Wind)"
+      },
+      "rpth_lw": {
+        "name": "RPth (Schwacher Wind)"
+      },
+      "rpth_hw": {
+        "name": "RPth (Starker Wind)"
+      },
+      "relaxation": {
+        "name": "Relaxationsfaktor"
+      }
+    },
+    "time": {
+      "target_hour": {
+        "name": "Zielzeit"
+      },
+      "recoverycalc_hour": {
+        "name": "Heizung Abschaltzeit"
+      },
+      "recovery_start_time": {
+        "name": "Aufheiz-Startzeit"
+      }
+    },
+    "switch": {
+      "smartheating_mode": {
+        "name": "Intelligenter Heizmodus"
+      },
+      "adaptive_mode": {
+        "name": "Adaptiver Modus"
+      }
+    }
+  }
+}
