@@ -1,7 +1,7 @@
 {
   "name": "SmartHRT Card",
   "render_readme": true,
-  "filename": "smarthrt-card.js"
+  "filename": "smarthrt-card.js",
   "type": "plugin",
   "domain": "smarthrt"
 }
