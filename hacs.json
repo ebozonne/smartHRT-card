@@ -1,6 +1,6 @@
 {
   "name": "SmartHRT Card",
-  "render_readme": true,
   "type": "plugin",
-  "content_directory": "./"
+  "render_readme": true,
+  "zip_release": false
 }
