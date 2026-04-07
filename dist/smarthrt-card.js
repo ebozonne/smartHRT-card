@@ -162,7 +162,9 @@ class SmartHRTCard extends HTMLElement {
 
   async _loadLangKeys(lang) {
     if (SMARTHRT_TRANSLATION_CACHE[lang]) return SMARTHRT_TRANSLATION_CACHE[lang];
-    const url = new URL(`./translations/${lang}.json`, import.meta.url);
+    const scriptPath = import.meta.url;
+    const baseDir = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+    const url = `${baseDir}/translations/${lang}.json`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`Cannot load ${url}`);
     const payload = await resp.json();
