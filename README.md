@@ -1,3 +1,4 @@
+![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)
 # SmartHRT Card
 
 **Read this in other languages:** [Français](README.fr.md) | [English](README.md)
