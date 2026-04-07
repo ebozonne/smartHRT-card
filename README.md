@@ -41,10 +41,6 @@ This card is designed to be easily installed via [![hacs_badge](https://img.shie
 > [!IMPORTANT]
 > If you install the card **manually** (copying to `/config/www/`), make sure to place the **`translations/`** folder next to `smarthrt-card.js`. Without this folder, entity keys for different languages will not load.
 
-### Changelog
-
-**1.0.2** — Automatic selection of entity suffixes based on the Home Assistant interface language (`translations/*.json` files, fallback to English). Machine state labels use SmartHRT's built-in translations by language.
-
 ## ⚙️ Configuration (YAML)
 
 Once installed, you can add the card to your dashboard using the manual (YAML) editor.
