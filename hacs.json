@@ -2,5 +2,5 @@
   "name": "SmartHRT Card",
   "render_readme": true,
   "type": "plugin",
-  "domain": "smarthrt"
+  "content_directory": "./"
 }
