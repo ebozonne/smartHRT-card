@@ -50,6 +50,11 @@ const SMARTHRT_EN_FALLBACK = {
 
 let SMARTHRT_KEYS = { ...SMARTHRT_EN_FALLBACK, mode_values: {} };
 const SMARTHRT_TRANSLATION_CACHE = {};
+const SMARTHRT_LANGS = ['de', 'en', 'es', 'fr', 'it'];
+const SMARTHRT_ENTITY_SUFFIX_KEYS = SMARTHRT_REQUIRED_KEYS.filter(
+  (k) => /^(sensor|number|switch|time)_/.test(k),
+);
+let SMARTHRT_LANGS_PREFETCHED = false;
 const SMARTHRT_MODE_VALUES_BASE = {
   'initializing':    { label: 'INIT',       color: '#78909c', icon: '○' },
   'heating_on':      { label: 'ON',         color: '#ef4444', icon: '●' },
@@ -140,12 +145,55 @@ class SmartHRTCard extends HTMLElement {
     }
   }
 
+  _entityDomain(key) {
+    if (key.startsWith('sensor')) return 'sensor';
+    if (key.startsWith('number')) return 'number';
+    if (key.startsWith('switch')) return 'switch';
+    return 'time';
+  }
+
+  _suffixCandidates(key) {
+    const order = [];
+    const uiLang = this._getHaLang();
+    order.push(uiLang);
+    if (uiLang !== 'en') order.push('en');
+    SMARTHRT_LANGS.forEach((lang) => {
+      if (!order.includes(lang)) order.push(lang);
+    });
+
+    const seen = new Set();
+    const candidates = [];
+    const trySuffix = (suffix) => {
+      if (typeof suffix !== 'string' || !suffix || seen.has(suffix)) return;
+      seen.add(suffix);
+      candidates.push(suffix);
+    };
+
+    order.forEach((lang) => {
+      const pack = SMARTHRT_TRANSLATION_CACHE[lang];
+      if (pack) trySuffix(pack[key]);
+    });
+    trySuffix(SMARTHRT_KEYS[key]);
+    trySuffix(SMARTHRT_EN_FALLBACK[key]);
+
+    if (!candidates.length) {
+      trySuffix(SMARTHRT_EN_FALLBACK[key] || key.replace(/^[^_]+_/, ''));
+    }
+    return candidates;
+  }
+
   _eid(key) {
-    const suffix = SMARTHRT_KEYS[key];
-    const domain = key.startsWith('sensor') ? 'sensor'
-                 : key.startsWith('number') ? 'number'
-                 : key.startsWith('switch') ? 'switch' : 'time';
-    return `${domain}.${this._config.prefix}_${suffix}`;
+    const domain = this._entityDomain(key);
+    const prefix = this._config.prefix;
+    const candidates = this._suffixCandidates(key);
+    const states = this._hass?.states;
+    if (states) {
+      for (const suffix of candidates) {
+        const id = `${domain}.${prefix}_${suffix}`;
+        if (states[id]) return id;
+      }
+    }
+    return `${domain}.${prefix}_${candidates[0]}`;
   }
   _tr(key) { return SMARTHRT_KEYS[key] ?? SMARTHRT_EN_FALLBACK[key]; }
   _estate(key) { return this._hass?.states[this._eid(key)]?.state ?? null; }
@@ -195,11 +243,21 @@ class SmartHRTCard extends HTMLElement {
     return pack;
   }
 
+  _prefetchAllLangKeys() {
+    if (SMARTHRT_LANGS_PREFETCHED) return;
+    SMARTHRT_LANGS_PREFETCHED = true;
+    SMARTHRT_LANGS.forEach((lang) => {
+      this._loadLangKeys(lang).catch(() => {});
+    });
+  }
+
   _applyLanguageKeys() {
     const lang = this._getHaLang();
     if (this._activeLang === lang) return;
     this._activeLang = lang;
     const seq = ++this._langApplySeq;
+
+    this._prefetchAllLangKeys();
 
     this._loadLangKeys(lang)
       .catch(() => this._loadLangKeys('en'))
@@ -941,9 +999,7 @@ class SmartHRTCard extends HTMLElement {
 
   get subscribedEntities() {
     if (!this._config) return [];
-    return Object.keys(SMARTHRT_KEYS)
-      .filter(k => k !== 'mode_values' && !k.startsWith('label_'))
-      .map(k => this._eid(k));
+    return SMARTHRT_ENTITY_SUFFIX_KEYS.map((k) => this._eid(k));
   }
 
   static getStubConfig() { return { prefix: '', name: '' }; }
