@@ -15,7 +15,20 @@
     "number_rcth_lw": "rcth_vento_debole",
     "number_rcth_hw": "rcth_vento_forte",
     "number_relax": "fattore_di_rilassamento",
-    "switch_adaptive": "modalita_adattiva"
+    "switch_adaptive": "modalita_adattiva",
+    "label_stop": "Stop",
+    "label_relay": "Avvio",
+    "label_target": "Obiettivo",
+    "dialog_stop": "Ora di stop",
+    "dialog_target": "Ora obiettivo",
+    "dialog_title": "Modifica ora",
+    "btn_cancel": "Annulla",
+    "label_loading": "Caricamento…",
+    "label_no_history": "Nessun dato storico",
+    "label_current": "attuale",
+    "title_details": "Dettagli RCth",
+    "title_back": "Indietro",
+    "title_adaptive": "Modalità adattiva on/off"
   },
   "mode_values": {
     "initializing": "Inizializzazione",

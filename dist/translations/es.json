@@ -15,7 +15,20 @@
     "number_rcth_lw": "rcth_viento_bajo",
     "number_rcth_hw": "rcth_viento_alto",
     "number_relax": "factor_de_relajacion",
-    "switch_adaptive": "modo_adaptativo"
+    "switch_adaptive": "modo_adaptativo",
+    "label_stop": "Parar",
+    "label_relay": "Inicio",
+    "label_target": "Objetivo",
+    "dialog_stop": "Hora de parada",
+    "dialog_target": "Hora objetivo",
+    "dialog_title": "Editar hora",
+    "btn_cancel": "Cancelar",
+    "label_loading": "Cargando…",
+    "label_no_history": "Sin datos históricos",
+    "label_current": "actual",
+    "title_details": "Detalles RCth",
+    "title_back": "Volver",
+    "title_adaptive": "Modo adaptativo on/off"
   },
   "mode_values": {
     "initializing": "Inicializando",

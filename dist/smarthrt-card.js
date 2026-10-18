@@ -12,6 +12,8 @@ const SMARTHRT_REQUIRED_KEYS = [
   'label_time_to', 'number_setpoint', 'time_stop', 'time_target',
   'switch_enabled', 'sensor_rcth', 'sensor_uwind', 'number_rcth_lw',
   'number_rcth_hw', 'number_relax', 'switch_adaptive',
+  'label_stop', 'label_relay', 'label_target', 'dialog_stop', 'dialog_target',
+  'dialog_title', 'btn_cancel',
 ];
 
 // Runtime fallback if translation files are unavailable.
@@ -31,6 +33,19 @@ const SMARTHRT_EN_FALLBACK = {
   number_rcth_hw: 'rcth_high_wind',
   number_relax: 'relaxation_factor',
   switch_adaptive: 'adaptive_mode',
+  label_stop: 'Stop',
+  label_relay: 'Start',
+  label_target: 'Target',
+  dialog_stop: 'Stop time',
+  dialog_target: 'Target time',
+  dialog_title: 'Edit time',
+  btn_cancel: 'Cancel',
+  label_loading: 'Loading…',
+  label_no_history: 'No historical data',
+  label_current: 'current',
+  title_details: 'RCth details',
+  title_back: 'Back',
+  title_adaptive: 'Adaptive mode on/off',
 };
 
 let SMARTHRT_KEYS = { ...SMARTHRT_EN_FALLBACK, mode_values: {} };
@@ -132,6 +147,7 @@ class SmartHRTCard extends HTMLElement {
                  : key.startsWith('switch') ? 'switch' : 'time';
     return `${domain}.${this._config.prefix}_${suffix}`;
   }
+  _tr(key) { return SMARTHRT_KEYS[key] ?? SMARTHRT_EN_FALLBACK[key]; }
   _estate(key) { return this._hass?.states[this._eid(key)]?.state ?? null; }
   _eattr(key, attr) { return this._hass?.states[this._eid(key)]?.attributes?.[attr] ?? null; }
 
@@ -407,25 +423,25 @@ class SmartHRTCard extends HTMLElement {
         </div>
         <div class="time-row">
           <div class="time-block" id="block-stop">
-            <div class="time-block-label"><span class="emoji">⏹</span>Arrêt</div>
+            <div class="time-block-label"><span class="emoji">⏹</span>${SMARTHRT_KEYS.label_stop}</div>
             <div class="time-block-value" id="val-stop">—</div>
           </div>
           <div class="time-block readonly">
-            <div class="time-block-label"><span class="emoji">⏰</span>Relance</div>
+            <div class="time-block-label"><span class="emoji">⏰</span>${SMARTHRT_KEYS.label_relay}</div>
             <div class="time-block-value" id="val-relay">—</div>
           </div>
           <div class="time-block" id="block-target">
-            <div class="time-block-label"><span class="emoji">🎯</span>Cible</div>
+            <div class="time-block-label"><span class="emoji">🎯</span>${SMARTHRT_KEYS.label_target}</div>
             <div class="time-block-value" id="val-target">—</div>
           </div>
         </div>
       </div></ha-card>
       <div class="dialog-overlay" id="dialog-overlay">
         <div class="dialog-box">
-          <h3 id="dialog-title">Modifier l'heure</h3>
+          <h3 id="dialog-title">${SMARTHRT_KEYS.dialog_title}</h3>
           <input type="time" id="dialog-input">
           <div class="dialog-btns">
-            <button class="btn-cancel" id="dialog-cancel">Annuler</button>
+            <button class="btn-cancel" id="dialog-cancel">${SMARTHRT_KEYS.btn_cancel}</button>
             <button class="btn-ok" id="dialog-ok">OK</button>
           </div>
         </div>
@@ -536,9 +552,9 @@ class SmartHRTCard extends HTMLElement {
 
     // Status
     const statusText = this._expertLoading
-      ? `<text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="11" fill="${textColor}" opacity="0.6">Chargement…</text>`
+      ? `<text x="${W/2}" y="${H/2}" text-anchor="middle" font-size="11" fill="${textColor}" opacity="0.6">${this._tr('label_loading')}</text>`
       : (pairs.length === 0 && !this._expertLoading
-        ? `<text x="${W/2}" y="${(H/2+10).toFixed(1)}" text-anchor="middle" font-size="10" fill="${textColor}" opacity="0.5">Pas de données historiques</text>`
+        ? `<text x="${W/2}" y="${(H/2+10).toFixed(1)}" text-anchor="middle" font-size="10" fill="${textColor}" opacity="0.5">${this._tr('label_no_history')}</text>`
         : '');
 
     const chart = `
@@ -556,7 +572,7 @@ class SmartHRTCard extends HTMLElement {
     // Legend
     const nPts = pairs.length;
     const legendText = nPts > 0
-      ? `<span style="font-size:0.7em;opacity:0.6">${nPts} point${nPts>1?'s':''} / 7j</span>`
+      ? `<span style="font-size:0.7em;opacity:0.6">${nPts} point${nPts>1?'s':''} / 7d</span>`
       : '';
 
     // Read adaptive switch state
@@ -600,12 +616,12 @@ class SmartHRTCard extends HTMLElement {
           <span class="exp-title">${this._config.name} — RCth</span>
           <div class="exp-meta">
             <span class="npts">${nPts > 0 ? nPts+'pt' : ''}</span>
-            <button class="btn-detail" id="btn-detail" title="Détails RCth">📊</button>
-            <button class="btn-expert" id="btn-expert" title="Retour">⚙</button>
+            <button class="btn-detail" id="btn-detail" title="${this._tr('title_details')}">📊</button>
+            <button class="btn-expert" id="btn-expert" title="${this._tr('title_back')}">⚙</button>
           </div>
         </div>
         <div class="relax-row">
-          <button class="relax-brain" id="btn-adaptive" title="Mode adaptatif on/off">${adaptiveOn ? '🧠' : '🧠'}</button>
+          <button class="relax-brain" id="btn-adaptive" title="${this._tr('title_adaptive')}">${adaptiveOn ? '🧠' : '🧠'}</button>
           <input class="relax-slider" id="relax-slider" type="range" min="0" max="2" step="0.05"
             value="${isNaN(relaxVal) ? 1 : relaxVal.toFixed(2)}"
             ${relaxDisabled ? 'disabled' : ''}>
@@ -615,7 +631,7 @@ class SmartHRTCard extends HTMLElement {
         <div class="rcth-values">
           <div class="rcth-val"><strong>${rcthLW.toFixed(2)}</strong>U=10</div>
           <div class="rcth-val"><strong>${rcthHW.toFixed(2)}</strong>U=60</div>
-          ${rcthNow !== null ? `<div class="rcth-val"><strong>${rcthNow.toFixed(2)}</strong>actuel</div>` : ''}
+          ${rcthNow !== null ? `<div class="rcth-val"><strong>${rcthNow.toFixed(2)}</strong>${this._tr('label_current')}</div>` : ''}
         </div>
       </div></ha-card>`;
 
@@ -678,9 +694,9 @@ class SmartHRTCard extends HTMLElement {
     r.getElementById('btn-plus').addEventListener('click',  () => this._adjustTemp( 0.5));
     r.getElementById('btn-minus').addEventListener('click', () => this._adjustTemp(-0.5));
     r.getElementById('block-stop').addEventListener('click', () =>
-      this._openDialog("Heure d'arrêt", 'time_stop', this._el.valStop.textContent));
+      this._openDialog(SMARTHRT_KEYS.dialog_stop, 'time_stop', this._el.valStop.textContent));
     r.getElementById('block-target').addEventListener('click', () =>
-      this._openDialog('Heure cible', 'time_target', this._el.valTarget.textContent));
+      this._openDialog(SMARTHRT_KEYS.dialog_target, 'time_target', this._el.valTarget.textContent));
     r.getElementById('dialog-cancel').addEventListener('click', () => this._closeDialog());
     r.getElementById('dialog-ok').addEventListener('click',     () => this._confirmDialog());
     r.getElementById('btn-expert').addEventListener('click',    () => this._toggleExpert());
